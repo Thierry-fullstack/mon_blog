@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,9 +48,9 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-       // $email =$request->getSession()->get(SecurityRequestAttributes::LAST_USERNAME);
+      //  $email =$request->getSession()->get(SecurityRequestAttributes::LAST_USERNAME);
 
-             return new RedirectResponse($this->urlGenerator->generate('app_register'));
+             return new RedirectResponse($this->urlGenerator->generate('app_register_verified'));
         //throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
 

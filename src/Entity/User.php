@@ -52,6 +52,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'client', cascade: ['persist','remove'])]
     private ?Identity $identity = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $resetDateTime = null;
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $resetNumber = null;
+
+
 
     public function getId(): ?int
     {
@@ -202,9 +209,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->identity = $identity;
     }
 
+    public function getResetDateTime(): ?\DateTimeImmutable
+    {
+        return $this->resetDateTime;
+    }
+
+    public function setResetDateTime(?\DateTimeImmutable $resetDateTime): static
+    {
+        $this->resetDateTime = $resetDateTime;
+
+        return $this;
+    }
+
     public  function __toString(): string
     {
         return $this->getEmail();
     }
 
+    public function getResetNumber(): ?string
+    {
+        return $this->resetNumber;
+    }
+
+    public function setResetNumber(?string $resetNumber): static
+    {
+        $this->resetNumber = $resetNumber;
+
+        return $this;
+    }
 }

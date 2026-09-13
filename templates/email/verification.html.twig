@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check your identity</title>
+    <style>
+        body{
+            background-color:#fdfdfd;
+        }
+
+        div{
+            margin-bottom: 10px;
+        }
+        h2{
+            color: rgb(251,191,36);
+        }
+        h1{
+            color: rgb(8,145,178);
+        }
+    </style>
+</head>
+
+<body>
+<!-- Main Container -->
+<div>
+    <!-- Header -->
+    <div>
+        <h1>My website</h1>
+    </div>
+    <!-- Content -->
+    <div>
+        <h2>Welcome {{ user.email }}</h2>
+
+        <!-- CTA Button  -->
+        <div>
+            <p>
+                to secure your connexion, please would you report the number to check your reality
+            </p>
+            <h3>{{ number }}</h3>
+
+            <p>this link expires to one hour.</p>
+            <p>Thanks</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div>
+
+    </div>
+</div>
+</body>
+</html>
+

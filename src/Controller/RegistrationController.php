@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Form\VerifyNumberType;
+use App\Message\SendVerificationMessage;
 use App\Repository\UserRepository;
 use App\Security\UserAuthenticator;
 use App\Service\IntraController;
 use App\Service\JwtService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -104,7 +107,7 @@ class RegistrationController extends AbstractController
 
     }
 
-    #[Route('/registration/verif', name: 'app_registration_verif')]
+    #[Route('/register/verif', name: 'app_registration_verif')]
     public function resendVerif(JWTService $jwtService,IntraController $intraController,MessageBusInterface $messageBus): Response
     {
         if(!$this->getUser()){
@@ -118,5 +121,39 @@ class RegistrationController extends AbstractController
     }
         $this->addFlash('success','See your email box to confirm your address !');
         return $this->redirectToRoute('app_main');
+    }
+
+    /**
+     * @throws ExceptionInterface
+     */
+    #[Route('/register/verified-device',name: 'app_register_verified',methods: ['GET','POST'])]
+    public function verifiedDevice(UserRepository $userRepository,MessageBusInterface $messageBus,
+            EntityManagerInterface $em, Request $request
+    ):Response
+    {
+        $user = $userRepository->find($this->getUser());
+        $user?->setResetDateTime(new  DateTimeImmutable());
+        $number = mt_rand(100001,999999);
+        $messageBus->dispatch(new SendVerificationMessage('admin@mydomain.org',$user->getEmail(),'Check your identity','verification',['user'=>$user,'number'=>$number]));
+        $user->setResetDateTime(new DateTimeImmutable())->setResetNumber($number);
+        $em->flush();
+        $form = $this->createForm(VerifyNumberType::class,$user);
+        $form->handleRequest($request);
+        if($request->isMethod('POST')) {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $number = $form->get('number')->getData();
+                $now = new DateTimeImmutable();
+                $maintenant = $now->getTimestamp();
+                $validity = 900;
+                $limitTime = $user->getResetDateTime()->getTimestamp() + $validity;
+                if (strcmp($number, $user->getResetNumber() && $limitTime <= $maintenant)) {
+                    return $this->redirectToRoute('app_main');
+                } else {
+                    $this->addFlash('danger', 'Wrong number or time out');
+                    return $this->redirectToRoute('app_login');
+                }
+            }
+        }
+        return $this->render('registration/verified-device.html.twig',['form'=>$form->createView()]);
     }
 }

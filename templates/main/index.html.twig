@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block body %}
+    {% if exception is defined and exception is not null %}
+        {{ exception }}
+    {%  endif %}
+
+{% endblock %}

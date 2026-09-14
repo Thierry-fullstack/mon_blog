@@ -123,30 +123,43 @@ class RegistrationController extends AbstractController
         return $this->redirectToRoute('app_main');
     }
 
+
     /**
      * @throws ExceptionInterface
      */
-    #[Route('/register/verified-device',name: 'app_register_verified',methods: ['GET','POST'])]
-    public function verifiedDevice(UserRepository $userRepository,MessageBusInterface $messageBus,
-            EntityManagerInterface $em, Request $request
+    #[Route('/register/verified',name: 'app_register_verified')]
+    public function verifiedDevice(UserRepository $userRepository, MessageBusInterface $messageBus, EntityManagerInterface $em
     ):Response
     {
         $user = $userRepository->find($this->getUser());
         $user?->setResetDateTime(new  DateTimeImmutable());
         $number = mt_rand(100001,999999);
-        $messageBus->dispatch(new SendVerificationMessage('admin@mydomain.org',$user->getEmail(),'Check your identity','verification',['user'=>$user,'number'=>$number]));
-        $user->setResetDateTime(new DateTimeImmutable())->setResetNumber($number);
+        $messageBus->dispatch(new SendVerificationMessage('admin@mydomain.org', $user->getEmail(), 'Check your identity', 'verification', ['user' => $user, 'number' => $number]));
+        $user->setResetDateTime(new DateTimeImmutable())->setResetNumber($number)->setIsLogged(false);
         $em->flush();
+        return $this->redirectToRoute('app_verified_user');
+    }
+
+    /**
+     * @throws ExceptionInterface
+     */
+    #[Route('/register/user',name: 'app_verified_user',methods: ['GET','POST'])]
+    public function verifiedUser(UserRepository $userRepository,MessageBusInterface $messageBus,EntityManagerInterface $em,Request $request
+    ):Response
+    {
+        $user = $this->getUser();
         $form = $this->createForm(VerifyNumberType::class,$user);
         $form->handleRequest($request);
         if($request->isMethod('POST')) {
             if ($form->isSubmitted() && $form->isValid()) {
                 $number = $form->get('number')->getData();
                 $now = new DateTimeImmutable();
-                $maintenant = $now->getTimestamp();
+                $today = $now->getTimestamp();
                 $validity = 900;
                 $limitTime = $user->getResetDateTime()->getTimestamp() + $validity;
-                if (strcmp($number, $user->getResetNumber() && $limitTime <= $maintenant)) {
+                if (strcmp($number, $user->getResetNumber() && $limitTime <= $today)) {
+                    $user->setResetNumber(null)->setResetDateTime(null)->setIsLogged(true);
+                    $em->flush();
                     return $this->redirectToRoute('app_main');
                 } else {
                     $this->addFlash('danger', 'Wrong number or time out');

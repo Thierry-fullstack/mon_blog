@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use DateTimeImmutable;
+use Deprecated;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -53,12 +54,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Identity $identity = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $resetDateTime = null;
+    private ?DateTimeImmutable $resetDateTime = null;
 
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $resetNumber = null;
 
-
+    #[ORM\Column(nullable: true)]
+    private bool $isLogged = false;
 
     public function getId(): ?int
     {
@@ -135,7 +137,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $data;
     }
 
-    #[\Deprecated]
+    #[Deprecated]
     public function eraseCredentials(): void
     {
         // @deprecated, to be removed when upgrading to Symfony 8
@@ -209,21 +211,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->identity = $identity;
     }
 
-    public function getResetDateTime(): ?\DateTimeImmutable
+    public function getResetDateTime(): ?DateTimeImmutable
     {
         return $this->resetDateTime;
     }
 
-    public function setResetDateTime(?\DateTimeImmutable $resetDateTime): static
+    public function setResetDateTime(?DateTimeImmutable $resetDateTime): static
     {
         $this->resetDateTime = $resetDateTime;
 
         return $this;
-    }
-
-    public  function __toString(): string
-    {
-        return $this->getEmail();
     }
 
     public function getResetNumber(): ?string
@@ -237,4 +234,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function isLogged(): ?bool
+    {
+        return $this->isLogged;
+    }
+
+    public function setIsLogged(?bool $isLogged): static
+    {
+        $this->isLogged = $isLogged;
+
+        return $this;
+    }
+
+    public  function __toString(): string
+    {
+        return $this->getEmail();
+    }
+
+
 }

@@ -22,20 +22,38 @@ class IntraController extends AbstractController
     private const string CHECk_USER = 'check_user'; // method
     private const string REGISTER = 'register'; // template
 
-
-    static function completeCivilty(User $user):bool
+    static function userVerified(User $user):bool
     {
-        if(!$user === null){
-            if($user->isVerified() === true && $user->isCompleted() === false){
-                return true;
-            }
+            if($user->isVerified()===false){
+                return 1;
         }
+        return 0;
+    }
+
+    static function userCompleted(User $user):bool
+    {
+        if($user->isVerified()===true && $user->isCompleted()===false){
+            return 1;
+        }
+        return 0;
+    }
+    static function userLogged(User $user):bool
+    {
+        if( $user->isVerified() && $user->isCompleted() && !($user->isLogged())){
+            return 1;
+        }
+    return 0;
+    }
+    static function userHacked(User $user):bool
+    {
+        if(!$user->isLogged()){
+            return 1;
+    }
     return false;
     }
 
     /**
      * email validation function
-     *
      * @param User $user
      * @param JwtService $jwt
      * @param MessageBusInterface $messageBus

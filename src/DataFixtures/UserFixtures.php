@@ -19,7 +19,7 @@ class UserFixtures extends Fixture
         $faker = Factory::create('fr_FR');
 
         $user = new User();
-        $user->setRoles(['ROLE_ADMIN'])->setCreatedAt(new DateTimeImmutable())->setEmail($faker->email())->setRgpd(true);
+        $user->setRoles(['ROLE_ADMIN'])->setCreatedAt(new DateTimeImmutable())->setEmail('toto@gmx.fr')->setRgpd(true);
         $user->setPassword($this->passwordHasher->hashPassword($user,'ArethiA75!'));
         $manager->persist($user);
 

@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Form\VerifyNumberType;
-use App\Message\SendVerificationMessage;
 use App\Repository\UserRepository;
 use App\Security\UserAuthenticator;
 use App\Service\IntraController;
@@ -25,16 +24,20 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RegistrationController extends AbstractController
 {
-    private const string SUBJECT = 'Activate your account';
-    private const string DESTINATION = 'check_user';
-    private const string TEMPLATE = 'register';
 
-
-
+    /**
+     * @param Request $request
+     * @param ValidatorInterface $validator
+     * @param UserPasswordHasherInterface $userPasswordHasher
+     * @param Security $security
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
     #[Route('/register', name: 'app_register',methods: ['GET','POST'])]
-    public function register(Request $request,ValidatorInterface $validator, IntraController $intraController,
-      JwtService $jwtService,MessageBusInterface $messageBus,UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
+    public function register(Request $request,ValidatorInterface $validator,
+                             UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
+
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -61,14 +64,7 @@ class RegistrationController extends AbstractController
                             'registrationForm' => $form->createView(),'exception'=>$e->getMessage()
                         ]);
                     }
-                // do anything else you need here, like send an email
-                try {
-                    $intraController->emailValidate($user, $jwtService, $messageBus, self::DESTINATION,
-                        self::SUBJECT, self::TEMPLATE);
-                } catch (ExceptionInterface $e) {
-                        return $this->redirectToRoute('app_main',['exception'=>$e->getMessage()]);
-                }
-                $this->addFlash('success','See your email box to confirm your address !');
+
                 return $security->login($user, UserAuthenticator::class, 'main');
             }
         }
@@ -107,46 +103,53 @@ class RegistrationController extends AbstractController
 
     }
 
+    /**
+     * @param JwtService $jwtService
+     * @param IntraController $intraController
+     * @param MessageBusInterface $messageBus
+     */
     #[Route('/register/verif', name: 'app_registration_verif')]
-    public function resendVerif(JWTService $jwtService,IntraController $intraController,MessageBusInterface $messageBus): Response
+    public function resendVerif(JWTService $jwtService,IntraController $intraController,MessageBusInterface $messageBus):void
     {
-        if(!$this->getUser()){
-            return  $this->redirectToRoute('app_main');
-        }
     try{
-            $intraController->emailValidate($this->getUser(),$jwtService,$messageBus,self::DESTINATION,self::SUBJECT,self::TEMPLATE);
+            $intraController->emailValidate($this->getUser(),$jwtService,$messageBus);
     }catch (ExceptionInterface $e){
             $this->addFlash('danger','Something wrong,Please try again later.');
-        return $this->redirectToRoute('app_main',['exception'=>$e->getMessage()]);
     }
         $this->addFlash('success','See your email box to confirm your address !');
-        return $this->redirectToRoute('app_main');
     }
 
-
     /**
+     * @param UserRepository $userRepository
+     * @param IntraController $intraController
+     * @param MessageBusInterface $messageBus
+     * @param EntityManagerInterface $em
+     * @return Response
      * @throws ExceptionInterface
      */
     #[Route('/register/verified',name: 'app_register_verified')]
-    public function verifiedDevice(UserRepository $userRepository, MessageBusInterface $messageBus, EntityManagerInterface $em
+    public function verifiedDevice(UserRepository $userRepository,IntraController $intraController , MessageBusInterface $messageBus, EntityManagerInterface $em
     ):Response
     {
         $user = $userRepository->find($this->getUser());
         $user?->setResetDateTime(new  DateTimeImmutable());
         $number = mt_rand(100001,999999);
-        $messageBus->dispatch(new SendVerificationMessage('admin@mydomain.org', $user->getEmail(), 'Check your identity', 'verification', ['user' => $user, 'number' => $number]));
+        $intraController->emailSimple($user,$messageBus,['user'=>$user,'number'=>$number]);
+      //  $messageBus->dispatch(new SendVerificationMessage('admin@mydomain.org', $user->getEmail(), 'Check your identity', 'verification', ['user' => $user, 'number' => $number]));
         $user->setResetDateTime(new DateTimeImmutable())->setResetNumber($number)->setIsLogged(false);
         $em->flush();
         return $this->redirectToRoute('app_verified_user');
     }
 
     /**
-     * @throws ExceptionInterface
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @return Response
      */
     #[Route('/register/user',name: 'app_verified_user',methods: ['GET','POST'])]
-    public function verifiedUser(UserRepository $userRepository,MessageBusInterface $messageBus,EntityManagerInterface $em,Request $request
-    ):Response
+    public function verifiedUser(EntityManagerInterface $em,Request $request):Response
     {
+
         $user = $this->getUser();
         $form = $this->createForm(VerifyNumberType::class,$user);
         $form->handleRequest($request);

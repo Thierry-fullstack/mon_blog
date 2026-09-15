@@ -15,9 +15,7 @@
 <body class="d-flex flex-column min-vh-100">
 
         {% include '/_components/_flash.html.twig' %}
-        {% if app.user and app.user.verified == false %}
-        {% include '/_components/_unactivited_account.html.twig' %}
-        {% endif %}
+
         {% block body %}
 
         <main role="main">

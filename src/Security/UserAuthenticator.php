@@ -50,7 +50,7 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         }
       //  $email =$request->getSession()->get(SecurityRequestAttributes::LAST_USERNAME);
 
-             return new RedirectResponse($this->urlGenerator->generate('app_register_verified'));
+             return new RedirectResponse($this->urlGenerator->generate('app_main'));
         //throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
 

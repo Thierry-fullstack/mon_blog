@@ -3,24 +3,24 @@
 namespace App\Entity;
 
 use App\Repository\IdentityRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: IdentityRepository::class)]
 class Identity
 {
+    const string FORM_ADD_SUCCESSFULLY = 'FORM_ADD_SUCCESSFULLY';
+    const string FORM_BAD_RESPONSE = 'FORM_BAD_RESPONSE';
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $updatedAt = null;
-
-    #[ORM\Column(length: 30)]
-    private ?string $gender = null;
+    #[ORM\Column(nullable: true)]
+    private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $skill = null;
@@ -39,44 +39,36 @@ class Identity
     #[ORM\JoinColumn(nullable: false)]
     private ?User $client = null;
 
+    #[ORM\ManyToOne(inversedBy: 'identities')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Civility $civility = null;
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function getGender(): ?string
-    {
-        return $this->gender;
-    }
-
-    public function setGender(string $gender): static
-    {
-        $this->gender = $gender;
 
         return $this;
     }
@@ -142,6 +134,18 @@ class Identity
     public function __toString():string
     {
         return $this->getPseudo();
+    }
+
+    public function getCivility(): ?Civility
+    {
+        return $this->civility;
+    }
+
+    public function setCivility(?Civility $civility): static
+    {
+        $this->civility = $civility;
+
+        return $this;
     }
 
 

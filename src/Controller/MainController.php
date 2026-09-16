@@ -24,17 +24,14 @@ final class MainController extends AbstractController
      * @param RegistrationController $registrationController
      * @param UserRepository $userRepository
      * @param EntityManagerInterface $em
-     * @param SessionInterface $session
      * @return Response
      * @throws ExceptionInterface
      */
     #[Route('/', name: 'app_main')]
     public function index(IntraController $intraController,MessageBusInterface $messageBus,JwtService $jwtService,
-                  RegistrationController $registrationController,UserRepository $userRepository,EntityManagerInterface $em,SessionInterface $session ): Response
+                  RegistrationController $registrationController,UserRepository $userRepository,EntityManagerInterface $em ): Response
     {
-        $sessionId = $session->getId();
         if($this->getUser()) {
-
             if(IntraController::userVerified($this->getUser())){
                 $this->ActivedUser($intraController,$jwtService,$messageBus);
             }
@@ -51,7 +48,7 @@ final class MainController extends AbstractController
                return $this->redirectToRoute('app_logout');
            }
         }
-        return $this->render('main/index.html.twig',['session'=>$sessionId]);
+        return $this->render('main/index.html.twig');
     }
     /**
      * @param IntraController $intraController

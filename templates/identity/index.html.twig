@@ -1,20 +1,117 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello IdentityController!{% endblock %}
-
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/thierry/Symfony/mon-app/src/Controller/IdentityController.php</code></li>
-        <li>Your template at <code>/home/thierry/Symfony/mon-app/templates/identity/index.html.twig</code></li>
-    </ul>
-</div>
+{% block title %}Register {{ app.user.email }}{% endblock %}
+{% block importmap %}
+    {{ importmap(['app', 'civility']) }}
 {% endblock %}
+
+    {% block body %}
+        <div class="container-sm py-5 my-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="contact-wrapper shadow rounded-1">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <div class="contact-info h-100" >
+                                    <h6 class="mb-3 text-info-emphasis">Indications :</h6>
+                                    <p class="my-3  text-sm-center text-warning" id="dialogRegister">&nbsp;</p>
+                                    <ul class="text-info-emphasis">
+                                        <li class="contact-item">
+                                            <p class="fw-light text-info-emphasis" id="email-info">Email</p>
+                                        </li>
+                                        <li class="contact-item">
+                                            <p class="fw-light text-info-emphasis" id="pseudo-info">Pseudo</p>
+                                        </li>
+                                        <li class="contact-item">
+                                            <p class="fw-light text-info-emphasis" id="portrait-info">Portrait</p>
+                                        </li>
+                                        <li class="contact-item">
+                                            <p class="fw-light text-info-emphasis" id="password-info">Mot de passe</p>
+                                        </li>
+
+                                        <div class="contact-item mb-3" id="password-info">
+                                            <ul id='password_criteria' class="text-warning">
+                                                <li id="password_length_criteria" data-password-criteria class="password-criteria-true">10 caractères au total</li>
+                                                <li id="password_special_character_criteria" data-password-criteria>Caractère spécial</li>
+                                                <li id="password_uppercase_criteria" data-password-criteria>Majuscule</li>
+                                                <li id="password_number_criteria" data-password-criteria>Chiffre</li>
+                                                <li id="password_lowercase_criteria" data-password-criteria>Minuscule</li>
+                                            </ul>
+                                        </div>
+
+                                        <li class="contact-item">
+                                            <p class="fw-light text-info-emphasis mt-5" id="agree-info">Contrat </p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col-md-8" >
+                                <div class="contact-form">
+                                    <div class="bg-white text-center rounded-3 ">
+                                        <h1 class="text-sm-center mt-2 fst-italic text-capitalize text-primary-emphasis ">Inscription</h1>
+                                    </div>
+                                    <hr class="text-danger-emphasis mx-1" />
+                                    {{ form_start(form,{attr:{id:'add_identity_form',novalidate:'novalidate'}}) }}
+                                    <div class="row mb-3">
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                 {{ form_label(form.civility)}}
+                                                 {{ form_widget(form.civility) }}
+                                                    <div class="fs-6">
+                                                     {{ form_errors(form.civility)}}
+                                                     </div>
+                                                </div>
+                                            </div>
+
+                                        <div class="col-md-8">
+                                            <div class="form-floating mx-1">
+                                                <p class="text-danger-emphasis ">Region :</p>
+                                                {{ form_widget(form.region) }}
+                                                <div class="fs-6">
+                                                    {{ form_errors(form.region)}}
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="form-floating mb-3 mx-1">
+                                        {{ form_widget(form.pseudo) }}
+                                        {{ form_label(form.pseudo)}}
+                                        <div class="fs-6">
+                                            {{ form_errors(form.pseudo)}}
+                                        </div>
+                                    </div>
+                                    <div class="form-floating mb-3 mx-1">
+                                        {{ form_widget(form.portrait) }}
+                                        {{ form_label(form.portrait)}}
+                                        <div class="fs-6">
+                                            {{ form_errors(form.portrait)}}
+                                        </div>
+                                    </div>
+                                    <div class="form-floating mb-3 mx-1">
+                                        {{ form_widget(form.skill) }}
+                                        {{ form_label(form.skill)}}
+                                        <div class="fs-6">
+                                            {{ form_errors(form.skill)}}
+                                        </div>
+                                    </div>
+                                    <div class="d-grid mx-1 mt-2">
+                                        {{ form_row(form.submit,{ attr:{ class:'btn btn-outline-secondary text-capitalize col-12 mx-auto' } }) }}
+                                    </div>
+                                    {{ form_end(form) }}
+                                    <div class="text-center my-4">
+                                        <a href="{{ path('app_login') }}" class="text-warning fst-italic text-decoration-none "
+                                           data-bs-toggle="tooltip" data-bs-placement="top" title="Déjà inscrit ?">Déjà inscrit ?</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+

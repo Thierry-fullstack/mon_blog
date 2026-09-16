@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Civility;
 use App\Entity\Identity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,6 +15,15 @@ class IdentityRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Identity::class);
+    }
+
+
+    public function findByGender():Identity
+    {
+        $identity = new Identity();
+        $gender = $this->getEntityManager()->find(Civility::class,Civility::FEMALE);
+        $identity->setCivility($gender);
+        return $identity;
     }
 
     //    /**

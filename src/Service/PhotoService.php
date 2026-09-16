@@ -72,7 +72,7 @@ class PhotoService
         $resized_picture = imagecreatetruecolor($width, $height);
         imagecopyresampled($resized_picture, $picture_source, 0, 0, $src_x, $src_y, $width, $height, $squareSize, $squareSize);
 
-        $path = $this->params->get('image_directory') . $folder;
+        $path = $this->params->get('images_directory') . $folder;
 
         if(!file_exists($path . '/mini/')){
             if (!mkdir($concurrentDirectory = $path . '/mini/', 0755, true) && !is_dir($concurrentDirectory)) {

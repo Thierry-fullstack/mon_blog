@@ -92,7 +92,6 @@ class RegistrationController extends AbstractController
                 $user->setIsVerified(true);
                 $entityManager->persist($user);
                 $entityManager->flush();
-                $this->addFlash('success','Done ! your account is activated.');
                 return $this->redirectToRoute('app_main');
             }catch(EntityNotFoundException $e){
                 return $this->redirectToRoute('app_error',['exception'=>$e]);
@@ -135,7 +134,6 @@ class RegistrationController extends AbstractController
         $user?->setResetDateTime(new  DateTimeImmutable());
         $number = mt_rand(100001,999999);
         $intraController->emailSimple($user,$messageBus,['user'=>$user,'number'=>$number]);
-      //  $messageBus->dispatch(new SendVerificationMessage('admin@mydomain.org', $user->getEmail(), 'Check your identity', 'verification', ['user' => $user, 'number' => $number]));
         $user->setResetDateTime(new DateTimeImmutable())->setResetNumber($number)->setIsLogged(false);
         $em->flush();
         return $this->redirectToRoute('app_verified_user');

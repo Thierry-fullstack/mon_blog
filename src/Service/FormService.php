@@ -60,7 +60,7 @@ class FormService
         $this->em->flush();
         return new JsonResponse([
             'code'=>Identity::FORM_ADD_SUCCESSFULLY,
-            'html'=>$this->twig->render('main/index.html.twig')
+            'html'=>$this->twig->render('_components/_Indentity_done.html.twig',['identity'=>$identity->getPseudo() ])
         ]);
     }
 

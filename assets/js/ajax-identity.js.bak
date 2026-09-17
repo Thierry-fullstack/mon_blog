@@ -1,0 +1,65 @@
+/**
+ * @typedef {Object} FormResponse
+ * @property {string} code
+ * @property {Object} errors
+ * @property {string} html
+ */
+const form_civility = document.body.querySelector('#add_identity_form');
+if(form_civility) {
+    const identity_region = form_civility.querySelector('#identity_region');
+    identity_region.addEventListener('input',function(){
+        if(this.classList.contains('is-invalid')){
+            removeErrors();
+        }
+    });
+
+    form_civility.addEventListener('submit', function (e) {
+        e.preventDefault();
+        fetch(this.action, {
+            method: 'POST',
+            body: new FormData(e.target),
+            cache: "no-cache"
+        }).then(response => response.json())
+            .then(json => {
+                handleResponse(json)
+            })
+    });
+}
+    /**
+    * @param {FormResponse} response
+    */
+    const handleResponse = function (response){
+        removeErrors();
+        switch (response.code){
+            case 'FORM_ADD_SUCCESSFULLY':
+                window.location.href="https://localhost:8000/login";
+                break;
+            case 'FORM_BAD_RESPONSE':
+                handleErrors(response.errors);
+                break;
+
+        }
+    }
+    const removeErrors = function(){
+        const invalidFeedbackElements = document.querySelectorAll('.invalid-feedback');
+        const isInvalidElements = document.querySelectorAll('.is-invalid');
+        invalidFeedbackElements.forEach(errorElement => errorElement.remove());
+        isInvalidElements.forEach(isInvalidElements => isInvalidElements.classList.remove('is-invalid'));
+    }
+    /**
+    *
+    * @param {Object} errors
+    */
+    const handleErrors = function(errors){
+        if(errors.length === 0) return;
+        for(const key in errors) {
+            let element = document.querySelector(`#identity_${key}`);
+        element.classList.add('is-invalid');
+        let div = document.createElement('div');
+        div.classList.add('invalid-feedback', 'd-block');
+        div.innerText = errors[key];
+        element.after(div);
+    }
+}
+
+

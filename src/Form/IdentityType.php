@@ -11,14 +11,12 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Event\PostSubmitEvent;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\Length;
@@ -80,7 +78,6 @@ class IdentityType extends AbstractType
                     new Sequentially([
                         new NotBlank(),
                         new File(maxSize: '2M',filenameMaxLength: 2048,extensions: ['jpg','jpeg']),
-                      //  new Count(min:1,max: 1),
                         new Image(mimeTypes: ['image/jpeg','image/jpg'],minWidth: 640,minHeight: 480,allowSquare: true,allowLandscape: false,allowPortrait: true)
                     ]),
                 ]),

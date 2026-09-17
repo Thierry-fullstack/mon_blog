@@ -1,49 +1,98 @@
 /**
- *
  * @typedef {Object} FormResponse
  * @property {string} code
  * @property {Object} errors
  * @property {string} html
  */
-const form_civility = document.body.querySelector('#add_identity_form');
+let form_civility = document.body.querySelector('#add_identity_form');
 if(form_civility) {
+    const record_done = document.querySelector('#record_done');
+    const identity_region = form_civility.querySelector('#identity_region');
+    const identity_pseudo = form_civility.querySelector('#identity_pseudo');
+    const identity_portrait = form_civility.querySelector('#identity_portrait');
+    const identity_skill = form_civility.querySelector('#identity_skill');
+    const identity_submit = form_civility.querySelector('#identity_submit');
 
+
+    identity_region.addEventListener('input', function () {
+        if (this.classList.contains('is-invalid')) {
+            removeErrorOne(this);
+        }
+    });
+    identity_pseudo.addEventListener('focus', function () {
+        if (this.classList.contains('is-invalid')) {
+            removeErrorOne(this);
+        }
+    });
+    identity_portrait.addEventListener('focus', function () {
+        removeErrorOne(this);
+    });
+    identity_skill.addEventListener('focus', function () {
+        removeErrorOne(this);
+    })
     form_civility.addEventListener('submit', function (e) {
         e.preventDefault();
         fetch(this.action, {
-            body: new FormData(e.target),
             method: 'POST',
-        }).then(response => response.json())
+            body: new FormData(e.target),
+        })
+            .then(response => response.json())
             .then(json => {
                 handleResponse(json)
             })
     });
-}
+
 
     /**
-    *
-    * @param {FormResponse} response
-    */
-    const handleResponse = function (response){
+     * @param {FormResponse} response
+     */
+    const handleResponse = function (response) {
         removeErrors();
-        switch (response.code){
+        switch (response.code) {
             case 'FORM_ADD_SUCCESSFULLY':
+                identity_submit.setAttribute('disabled','disabled');
                 form_civility.reset();
-                window.location.href="https://localhost:8000/login";
+                record_done.innerHTML += response.html
                 break;
             case 'FORM_BAD_RESPONSE':
                 handleErrors(response.errors);
                 break;
-
         }
     }
+}
+
+
+
+
+const recordDone = function(){
+    let div = document.createElement('div');
+    div.classList.add('alert alert-dismissible alert-success');
+    let button = document.createElement('button');
+    button.classList.add('btn-close');
+    button.setAttribute("data-bs-dismiss","alert");
+    button.setAttribute("type","button");
+    button.after(div);
+    let strong = document.createElement('strong');
+    strong.innerText="Record it done !"
+    strong.after(div);
+    div.after(document);
+
+}
+
+/**
+ *
+ * @param field
+ */
+const removeErrorOne = function(field){
+        field.classList.remove('is-invalid');
+        field.nextSibling.remove();
+}
     const removeErrors = function(){
         const invalidFeedbackElements = document.querySelectorAll('.invalid-feedback');
         const isInvalidElements = document.querySelectorAll('.is-invalid');
         invalidFeedbackElements.forEach(errorElement => errorElement.remove());
-        isInvalidElements.forEach(isInvalidElements => isInvalidElements.remove());
+        isInvalidElements.forEach(isInvalidElements => isInvalidElements.classList.remove('is-invalid'));
     }
-
     /**
     *
     * @param {Object} errors
@@ -58,6 +107,8 @@ if(form_civility) {
         div.innerText = errors[key];
         element.after(div);
     }
+
+
 }
 
 

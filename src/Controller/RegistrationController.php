@@ -97,7 +97,7 @@ class RegistrationController extends AbstractController
                 return $this->redirectToRoute('app_error',['exception'=>$e]);
             }
         }
-        $this->addFlash('danger','Token off !');
+        $this->addFlash('warning','Token off !');
         return $this->redirectToRoute('app_login');
 
     }
@@ -113,9 +113,9 @@ class RegistrationController extends AbstractController
     try{
             $intraController->emailValidate($this->getUser(),$jwtService,$messageBus);
     }catch (ExceptionInterface $e){
-            $this->addFlash('danger','Something wrong,Please try again later.');
+            $this->addFlash('warning','Something wrong,Please try again later.');
     }
-        $this->addFlash('success','See your email box to confirm your address !');
+        $this->addFlash('light','See your email box to confirm your address !');
     }
 
     /**
@@ -163,7 +163,7 @@ class RegistrationController extends AbstractController
                     $em->flush();
                     return $this->redirectToRoute('app_main');
                 } else {
-                    $this->addFlash('danger', 'Wrong number or time out');
+                    $this->addFlash('warning', 'Wrong number or time out');
                     return $this->redirectToRoute('app_login');
                 }
             }

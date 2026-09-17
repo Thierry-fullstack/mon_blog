@@ -42,7 +42,6 @@ if(form_civility) {
             })
     });
 
-
     /**
      * @param {FormResponse} response
      */
@@ -50,8 +49,7 @@ if(form_civility) {
         removeErrors();
         switch (response.code) {
             case 'FORM_ADD_SUCCESSFULLY':
-                identity_submit.setAttribute('disabled','disabled');
-                form_civility.reset();
+                recordDone(identity_submit)
                 record_done.innerHTML += response.html
                 break;
             case 'FORM_BAD_RESPONSE':
@@ -60,25 +58,14 @@ if(form_civility) {
         }
     }
 }
-
-
-
-
-const recordDone = function(){
-    let div = document.createElement('div');
-    div.classList.add('alert alert-dismissible alert-success');
-    let button = document.createElement('button');
-    button.classList.add('btn-close');
-    button.setAttribute("data-bs-dismiss","alert");
-    button.setAttribute("type","button");
-    button.after(div);
-    let strong = document.createElement('strong');
-    strong.innerText="Record it done !"
-    strong.after(div);
-    div.after(document);
-
+/**
+ *
+ * @param field
+ */
+const recordDone = function(field){
+    field.setAttribute('disabled','disabled');
+    form_civility.reset();
 }
-
 /**
  *
  * @param field

@@ -1,3 +1,9 @@
 html body {
 
 }
+
+#identity_civility,
+#identity_region
+{
+    font-size: 13px;
+}

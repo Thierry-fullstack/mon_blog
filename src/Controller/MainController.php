@@ -36,7 +36,7 @@ final class MainController extends AbstractController
                 $this->ActivedUser($intraController,$jwtService,$messageBus);
             }
            if(IntraController::userCompleted($this->getUser())){
-               $this->addFlash('info','You should completed your identity account');
+               $this->addFlash('warning','You should completed your identity account');
                return $this->redirectToRoute('app_identity');
            }
            if(IntraController::userLogged($this->getUser())){

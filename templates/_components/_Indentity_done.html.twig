@@ -1,9 +1,13 @@
 
-
 {% if identity is defined %}
-<div class="alert alert-dismissible alert-success">
+<div class="container-sm">
+<div class="alert alert-dismissible alert-light">
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    <strong>Well done!</strong> You can access to your profil at <a href="{{ path('app_main') }}" class="alert-link">{{ app.user.email }}</a>.
+    <div class="alert-message fw-lighter text-center" >
+        <strong>enregistrement réussi !</strong> Vous accédez à votre profil en cliquant sur le lien :
+        <a href="{{ path('app_main') }}" class="alert-link">{{ app.user.identity.pseudo }}</a>
+    </div>
+</div>
 </div>
 {% endif %}
 

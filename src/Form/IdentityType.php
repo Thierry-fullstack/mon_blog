@@ -30,10 +30,11 @@ class IdentityType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('civility',EntityType::class,['attr'=>['class'=>'form-check form-check-sm'],
+            ->add('civility',EntityType::class,['attr'=>['class'=>'form-check form-control-sm'],
                 'class'=>Civility::class,
                 'choice_label'=>'gender',
-                'label'=>'Gender',
+                'label_attr'=>['class'=>'form-label text-primary-emphasis','id'=>'identity_civility'],
+                'label'=>'Etat civil :',
                 'required'=>true,
                 'expanded'=>true,
                 'multiple'=>false,
@@ -42,8 +43,9 @@ class IdentityType extends AbstractType
                 ])
 
             ])
-            ->add('skill',TextType::class,['attr'=>['class'=>'form-control form-control-sm'],'label'=>'Skill',
+            ->add('skill',TextType::class,['attr'=>['class'=>'form-control form-control-sm'],'label'=>'Compétence :',
                 'required'=>false,
+                'label_attr'=>['class'=>'form-label text-primary-emphasis'],
                 'constraints'=>([
                     new Sequentially([
                         new Length(max: 255),
@@ -56,6 +58,8 @@ class IdentityType extends AbstractType
                 ])
             ->add('pseudo',TextType::class,['attr'=>['class'=>'form-control form-control-sm'],
                 'required'=>true,
+                'label'=>'Pseudonyme :',
+                'label_attr'=>['class'=>'form-label text-primary-emphasis'],
                 'constraints'=>([
                     new Sequentially([
                         new NotBlank(),
@@ -73,7 +77,7 @@ class IdentityType extends AbstractType
                 'mapped'=>false,
                 'required'=>true,
                 'label'=>'Photo',
-                'label_attr'=>['class'=>'form-label'],
+                'label_attr'=>['class'=>'form-label text-primary-emphasis'],
                 'constraints'=>([
                     new Sequentially([
                         new NotBlank(),
@@ -82,13 +86,13 @@ class IdentityType extends AbstractType
                     ]),
                 ]),
             ])
-            ->add('region', EntityType::class, ['attr'=>['class'=>'form-control form-control-sm'],
+            ->add('region', EntityType::class, ['attr'=>['class'=>'form-select '],
                 'class' => Region::class,
                 'query_builder' => function (RegionRepository $er): QueryBuilder {
                 return $er->createQueryBuilder('r')
                     ->orderBy('r.name','ASC');
                 },
-                'placeholder'=>'Choose your region',
+                'placeholder'=>'Sélectionner votre région',
                 'choice_label' => 'name',
                 'required'=>true,
                 'constraints'=>([
@@ -98,7 +102,7 @@ class IdentityType extends AbstractType
                     ])
                 ]),
             ])
-            ->add('submit',SubmitType::class,['attr'=>['class'=>'btn btn-outline-secondary'],'label'=>'Submit your record'])
+            ->add('submit',SubmitType::class,['attr'=>['class'=>'btn btn-secondary'],'label'=>'Soumettre'])
         ->addEventListener(FormEvents::POST_SUBMIT,$this->addTimer(...))
         ;
     }

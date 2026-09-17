@@ -11,10 +11,10 @@ class CivilityFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $civility = new Civility();
-        $civility->setGender('woman');
+        $civility->setGender('Femme');
         $manager->persist($civility);
         $civility = new Civility();
-        $civility->setGender('man');
+        $civility->setGender('Homme');
         $manager->persist($civility);
         $manager->flush();
     }

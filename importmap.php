@@ -20,6 +20,10 @@ return [
         'path'=>'./assets/js/ajax-identity.js',
         'entrypoint'=>true,
     ],
+    'login'=>[
+        'path'=>'./assets/js/login.js',
+        'entrypoint'=>true,
+    ],
     '@hotwired/turbo' => [
         'version' => '8.0.23',
     ],

@@ -27,7 +27,7 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('email',EmailType::class,['attr'=>['class'=>'form-control text-dark '],'required'=>true,
                 'label'=>'Email *',
-                'label_attr'=>['class'=>'form-check-label','id'=>'email-label'],
+                'label_attr'=>['class'=>'form-check-label fw-light text-primary-emphasis','id'=>'email-label'],
                 'constraints'=>[
                     new Sequentially([
                         new NotBlank(),
@@ -39,8 +39,8 @@ class RegistrationFormType extends AbstractType
             ->add('plainPassword', PasswordType::class,[
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password','class'=>'form-control text-dark'],
-                'label'=>'Password *',
-                'label_attr'=>['class'=>'form-check-label'],
+                'label'=>'Mot de passe *',
+                'label_attr'=>['class'=>'form-check-label fw-light text-primary-emphasis'],
                 'constraints' => [
                     new Sequentially([
                         new NotBlank(
@@ -60,18 +60,18 @@ class RegistrationFormType extends AbstractType
                     ])
                 ],
             ])
-            ->add('agreeTerms', CheckboxType::class, ['attr'=>['class'=>'form-check-input text-dark'],
+            ->add('agreeTerms', CheckboxType::class, ['attr'=>['class'=>'form-check-input text-warning-emphasis'],
                 'mapped' => false,
-                'label'=>'  Agree terms *',
-                'label_attr'=>['class'=>'form-check-label p-0 ','id'=>'label-check-agreeTerms'],
+                'label'=>'  Accepter contrat *',
+                'label_attr'=>['class'=>'form-check-label p-0 text-muted fw-light text-primary-emphasis ','id'=>'label-check-agreeTerms'],
                 'constraints' => [
                     new IsTrue(
                         message: '',
                     ),
                 ],
             ])
-            ->add('register',SubmitType::class,['attr'=>['class'=>'btn btn-outline-warning'],
-                'label'=>'Register'
+            ->add('register',SubmitType::class,['attr'=>['class'=>'btn btn-outline-light text-primary-emphasis w-100'],
+                'label'=>'Soumettre'
             ])
             ->addEventListener(FormEvents::POST_SUBMIT,$this->addDate(...))
         ;

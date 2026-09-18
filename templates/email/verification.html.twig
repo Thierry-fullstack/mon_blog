@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check your identity</title>
+    <title>Action de sécurité</title>
     <style>
         body{
             background-color:#fdfdfd;
@@ -12,11 +12,17 @@
         div{
             margin-bottom: 10px;
         }
-        h2{
+        h3{
             color: rgb(251,191,36);
         }
-        h1{
+        h2{
             color: rgb(8,145,178);
+        }
+        h4{
+            color: #E04B59;
+        }
+        p{
+            color:#5B62F5;
         }
     </style>
 </head>
@@ -26,21 +32,21 @@
 <div>
     <!-- Header -->
     <div>
-        <h1>My website</h1>
+        <h2>Blog de Thierry</h2>
     </div>
     <!-- Content -->
     <div>
-        <h2>Welcome {{ user.email }}</h2>
+        <h3>Bienvenue {{ user.email }}</h3>
 
         <!-- CTA Button  -->
         <div>
             <p>
-                to secure your connexion, please would you report the number to check your reality
+                Afin d'accéder à notre site, veuillez reporter ce code sur le formulaire mis à votre disposition.
             </p>
-            <h3>{{ number }}</h3>
+            <h4>{{ number }}</h4>
 
-            <p>this link expires to one hour.</p>
-            <p>Thanks</p>
+            <p>Ce lien expire dans une heure</p>
+            <p>Merci à vous.</p>
         </div>
     </div>
 

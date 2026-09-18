@@ -10,14 +10,16 @@
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
-
     </head>
+
 <body class="d-flex flex-column min-vh-100">
 
-        {% include '/_components/_flash.html.twig' %}
-
+{% include '_components/_navbar.html.twig' %}
+{% include '/_components/_flash.html.twig' %}
         {% block body %}
+
         <main role="main">
+
             {% block center %}
 
             {% endblock center %}

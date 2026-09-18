@@ -50,13 +50,13 @@ class IdentityType extends AbstractType
                     new Sequentially([
                         new Length(max: 255),
                         new Regex(
-                            pattern: '/^[a-zA-Z0-9 -\'èçàéïâ]{5,255}$/i',
-                            htmlPattern: '^[a-zA-Z0-9 -\'èçàéïâ]{5,255}$',
+                            pattern: '/^[a-zA-Z0-9 -\'èçàéïâêô]{5,255}$/i',
+                            htmlPattern: '^[a-zA-Z0-9 -\'èçàéïâêô]{5,255}$',
                             )
                         ])
                     ])
                 ])
-            ->add('pseudo',TextType::class,['attr'=>['class'=>'form-control form-control-sm'],
+            ->add('pseudo',TextType::class,['attr'=>['class'=>'form-control form-control-sm','placeholder'=>'toto'],
                 'required'=>true,
                 'label'=>'Pseudonyme :',
                 'label_attr'=>['class'=>'form-label text-primary-emphasis'],
@@ -86,12 +86,13 @@ class IdentityType extends AbstractType
                     ]),
                 ]),
             ])
-            ->add('region', EntityType::class, ['attr'=>['class'=>'form-select '],
+            ->add('region', EntityType::class, ['attr'=>['class'=>'form-select my-1 '],
                 'class' => Region::class,
                 'query_builder' => function (RegionRepository $er): QueryBuilder {
                 return $er->createQueryBuilder('r')
                     ->orderBy('r.name','ASC');
                 },
+
                 'placeholder'=>'Sélectionner votre région',
                 'choice_label' => 'name',
                 'required'=>true,

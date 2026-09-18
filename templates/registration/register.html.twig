@@ -3,17 +3,51 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
-        {% if exception is defined and exception is not null %}
-            {{ exception }}
-        {%  endif %}
-    {{ form_errors(registrationForm) }}
+    {% if exception is defined and exception is not null %}
+        {{ exception }}
+    {%  endif %}
+    <div class="d-flex align-items-center justify-content-center">
+        <div class="w-100 my-5" style="max-width: 480px;">
+            <div class="card-body">
+                <div class="text-center">
+                    <h1 class="card-title text-center fst-italic text-capitalize text-warning fw-semibold">Inscription</h1>
+                    <hr class="text-primary-emphasis" />
+                    <div class="d-grid gap-2 mb-3">
+                        <ul class="list-group">
+                            <li id="dialogLogin" class="list-group-item text-primary-emphasis fw-bolder">Champs obligatoires *</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    {{ form_start(registrationForm) }}
+                    <div class="form-floating mb-3 mx-1">
+                        {{ form_widget(registrationForm.email) }}
+                        {{ form_label(registrationForm.email)}}
+                        <div class="fs-6">
+                            {{ form_errors(registrationForm.email)}}
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3 mx-1">
+                        {{ form_widget(registrationForm.plainPassword) }}
+                        {{ form_label(registrationForm.plainPassword)}}
+                        <div class="fs-6">
+                            {{ form_errors(registrationForm.plainPassword)}}
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3 mx-1">
+                        {{ form_widget(registrationForm.agreeTerms) }}
+                        {{ form_label(registrationForm.agreeTerms)}}
+                        <div class="fs-6">
+                            {{ form_errors(registrationForm.agreeTerms)}}
+                        </div>
+                    </div>
+                    {{ form_end(registrationForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword) }}
-        {{ form_row(registrationForm.agreeTerms) }}
 
 
-    {{ form_end(registrationForm) }}
+
 {% endblock %}

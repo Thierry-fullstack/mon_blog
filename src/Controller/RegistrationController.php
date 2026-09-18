@@ -35,9 +35,9 @@ class RegistrationController extends AbstractController
      */
     #[Route('/register', name: 'app_register',methods: ['GET','POST'])]
     public function register(Request $request,ValidatorInterface $validator,
-                             UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
+                             UserPasswordHasherInterface $userPasswordHasher,
+                             Security $security, EntityManagerInterface $entityManager): Response
     {
-
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -64,7 +64,6 @@ class RegistrationController extends AbstractController
                             'registrationForm' => $form->createView(),'exception'=>$e->getMessage()
                         ]);
                     }
-
                 return $security->login($user, UserAuthenticator::class, 'main');
             }
         }
@@ -97,7 +96,7 @@ class RegistrationController extends AbstractController
                 return $this->redirectToRoute('app_error',['exception'=>$e]);
             }
         }
-        $this->addFlash('warning','Token off !');
+        $this->addFlash('warning','Déconnection !');
         return $this->redirectToRoute('app_login');
 
     }
@@ -113,61 +112,11 @@ class RegistrationController extends AbstractController
     try{
             $intraController->emailValidate($this->getUser(),$jwtService,$messageBus);
     }catch (ExceptionInterface $e){
-            $this->addFlash('warning','Something wrong,Please try again later.');
+            $this->addFlash('warning','Ca n\'a pas fonctionné, essayé plus tard.');
     }
-        $this->addFlash('light','See your email box to confirm your address !');
-    }
-
-    /**
-     * @param UserRepository $userRepository
-     * @param IntraController $intraController
-     * @param MessageBusInterface $messageBus
-     * @param EntityManagerInterface $em
-     * @return Response
-     * @throws ExceptionInterface
-     */
-    #[Route('/register/verified',name: 'app_register_verified')]
-    public function verifiedDevice(UserRepository $userRepository,IntraController $intraController , MessageBusInterface $messageBus, EntityManagerInterface $em
-    ):Response
-    {
-        $user = $userRepository->find($this->getUser());
-        $user?->setResetDateTime(new  DateTimeImmutable());
-        $number = mt_rand(100001,999999);
-        $intraController->emailSimple($user,$messageBus,['user'=>$user,'number'=>$number]);
-        $user->setResetDateTime(new DateTimeImmutable())->setResetNumber($number)->setIsLogged(false);
-        $em->flush();
-        return $this->redirectToRoute('app_verified_user');
+        $this->addFlash('light','Pour confirmer votre adresse, consultez votre boite mail !');
     }
 
-    /**
-     * @param EntityManagerInterface $em
-     * @param Request $request
-     * @return Response
-     */
-    #[Route('/register/user',name: 'app_verified_user',methods: ['GET','POST'])]
-    public function verifiedUser(EntityManagerInterface $em,Request $request):Response
-    {
 
-        $user = $this->getUser();
-        $form = $this->createForm(VerifyNumberType::class,$user);
-        $form->handleRequest($request);
-        if($request->isMethod('POST')) {
-            if ($form->isSubmitted() && $form->isValid()) {
-                $number = $form->get('number')->getData();
-                $now = new DateTimeImmutable();
-                $today = $now->getTimestamp();
-                $validity = 900;
-                $limitTime = $user->getResetDateTime()->getTimestamp() + $validity;
-                if (strcmp($number, $user->getResetNumber() && $limitTime <= $today)) {
-                    $user->setResetNumber(null)->setResetDateTime(null)->setIsLogged(true);
-                    $em->flush();
-                    return $this->redirectToRoute('app_main');
-                } else {
-                    $this->addFlash('warning', 'Wrong number or time out');
-                    return $this->redirectToRoute('app_login');
-                }
-            }
-        }
-        return $this->render('registration/verified-device.html.twig',['form'=>$form->createView()]);
-    }
+
 }

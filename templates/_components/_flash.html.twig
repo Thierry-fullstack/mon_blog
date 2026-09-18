@@ -3,7 +3,7 @@
     {% for message in messages %}
         <div class="alert alert-{{ label }} alert-dismissible" role="alert">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            <div class="alert-message fw-lighter text-black text-center">
+            <div class="alert-message fw-lighter text-primary-emphasis text-center">
                 {{ message|raw }}
             </div>
         </div>

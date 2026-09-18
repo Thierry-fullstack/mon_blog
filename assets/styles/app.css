@@ -3,7 +3,8 @@ html body {
 }
 
 #identity_civility,
-#identity_region
+#identity_region,
+#label-check-agreeTerms
 {
     font-size: 13px;
 }
